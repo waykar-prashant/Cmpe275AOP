@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -10,8 +8,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import edu.sjsu.cmpe275.lab1.UnauthorizedException;
 import edu.sjsu.cmpe275.lab1.interfaces.ISecretService;
 import edu.sjsu.cmpe275.lab1.model.Secret;
-import edu.sjsu.cmpe275.lab1.model.User;
-import edu.sjsu.cmpe275.lab1.services.SecretService;
 /*
  * testA: Bob cannot read Alice’s secret, which has not been shared with Bob
  * testB: Alice shares a secret with Bob, and Bob can read it.
