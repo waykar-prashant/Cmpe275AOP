@@ -1,5 +1,7 @@
 package edu.sjsu.cmpe275.lab1.aspect;
 
+import java.util.UUID;
+
 import org.aspectj.lang.annotation.After;
 
 import org.aspectj.lang.annotation.Aspect;
@@ -10,44 +12,46 @@ import org.aspectj.lang.annotation.Pointcut;
 
 import org.springframework.stereotype.Component;
 
+import edu.sjsu.cmpe275.lab1.model.Secret;
+
 @Aspect
 @Component
 public class LoggerAspect {
 
-	@Pointcut("execution(* edu.sjsu.cmpe275.lab1.services.SecretService.readSecret(..))")
-	public void readLog() {
+	@Pointcut("args(userId, secretId)")
+	public void readLog(String userId, UUID secretId) {
 	}
 
-	@Pointcut("execution(* edu.sjsu.cmpe275.lab1.services.SecretService.storeSecret(..))")
-	public void storeLog() {
+	@Pointcut("args(userId, secret)")
+	public void storeLog(String userId, Secret secret) {
 	}
 
-	@Pointcut("execution(* edu.sjsu.cmpe275.lab1.services.SecretService.unshareSecret(..))")
-	public void unshareLog() {
+	@Pointcut("args(userId, secretId, targetUserId) && execution(* edu.sjsu.cmpe275.lab1.services.SecretService.unshareSecret(..))")
+	public void unshareLog(String userId, UUID secretId, String targetUserId) {
 	}
 
-	@Pointcut("execution(* edu.sjsu.cmpe275.lab1.services.SecretService.shareSecret(..))")
-	public void shareLog() {
+	@Pointcut("args(userId, secretId, targetUserId) && execution(* edu.sjsu.cmpe275.lab1.services.SecretService.shareSecret(..))")
+	public void shareLog(String userId, UUID secretId, String targetUserId) {
 	}
 
-	@After("storeLog()")
-	public void storeSecretLog() {
-		System.out.println("ASPECT: Store Log!!");
+	@After("storeLog(userId, secret)")
+	public void storeSecretLog(String userId, Secret secret) {
+		System.out.println(userId +" creates a secret with ID " + secret.getSecretId());
 	}
 
-	@Before("readLog()")
-	public void readSecretLog() {
-		System.out.println("ASPECT: Read Log!!");
+	@Before("readLog(userId, secretId)")
+	public void readSecretLog(String userId, UUID secretId) {
+		System.out.println(userId +" reads the secret of ID " + secretId);
 	}
 
-	@Before("shareLog()")
-	public void shareSecretLog() {
-		System.out.println("ASPECT: Share Log!!");
+	@Before("shareLog(userId, secretId, targetUserId)")
+	public void shareSecretLog(String userId, UUID secretId, String targetUserId) {
+		System.out.println(userId +" shares the secret of ID " + secretId + " with " + targetUserId);
 	}
 
-	@Before("unshareLog()")
-	public void unshareSecretLog() {
-		System.out.println("ASPECT: Unshare Log!!");
+	@Before("unshareLog(userId, secretId, targetUserId)")
+	public void unshareSecretLog(String userId, UUID secretId, String targetUserId) {
+		System.out.println(userId +" unshares the secret of ID " + secretId + " with " + targetUserId);
 	}
 
 }
