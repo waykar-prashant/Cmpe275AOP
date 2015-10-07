@@ -39,7 +39,7 @@ public class AccessControlAspect {
 	
 	@After("storeLog(userId, secret)")
 	public UUID storeSecretLog(String userId, Secret secret) {
-		System.out.println("ASPECT: Store Log!!"+userId);
+		//System.out.println("ASPECT: Store Log!!"+userId);
 		//generate a new secret object and update the user owns list of UUIDs
 		//get a User object with user id = userId
 		if(userId != null && secret != null){
@@ -58,14 +58,14 @@ public class AccessControlAspect {
 
 	@Before("readLog(userId, secretId)")
 	public void readSecretLog(String userId, UUID secretId) {
-		System.out.println("ASPECT: Read Log!!");
+		//System.out.println("ASPECT: Read Log!!");
 		//if the users owns the secret or someone has shared secret with him, then the user can read it
 		//else throw exception
 		if(userId != null && secretId != null){
 			User tempUser = Utility.getUserFromUserId(userId);
 			if(tempUser != null){
 				if(tempUser.getOwn().contains(secretId) || tempUser.getSharedWithMe().contains(secretId)){
-					System.out.println("Read successful:" + secretId);
+					//System.out.println("Read successful:" + secretId);
 				}else{
 					System.out.println("Unauthorized access!!");
 					throw new UnauthorizedException();
@@ -80,7 +80,7 @@ public class AccessControlAspect {
 
 	@Before("shareLog(userId, secretId, targetUserId)")
 	public void shareSecretLog(String userId, UUID secretId, String targetUserId) {
-		System.out.println("ASPECT: Share Log!!");
+		//System.out.println("ASPECT: Share Log!!");
 		//check if the user owns the secret or someone has shared the secret with the user
 		//else exception
 		if(userId != null && secretId != null && targetUserId != null){
@@ -89,11 +89,12 @@ public class AccessControlAspect {
 				if(userId.equals(targetUserId)) //Self sharing has no effect
 					return;
 				if(tempUser.getOwn().contains(secretId) || tempUser.getSharedWithMe().contains(secretId)){
-					System.out.println("share is successful:" + secretId);
+					//System.out.println("share is successful:" + secretId);
 					//add this secret to the target user id
 					User targetUser = Utility.getUserFromUserId(targetUserId);
 					if(targetUser != null){
-						targetUser.getSharedWithMe().add(secretId);
+						if(!targetUser.getSharedWithMe().contains(secretId))
+							targetUser.getSharedWithMe().add(secretId);
 					}
 				}else{
 					System.out.println("Unauthorized access!!");
@@ -111,7 +112,7 @@ public class AccessControlAspect {
 
 	@Before("unshareLog(userId, secretId, targetUserId)")
 	public void unshareSecretLog(String userId, UUID secretId, String targetUserId) {
-		System.out.println("ASPECT: Unshare Log!!");
+		//System.out.println("ASPECT: Unshare Log!!");
 		//check if the user owns the secret 
 			//now check if the target user has the secret
 			//if yes then remove from the list
@@ -128,7 +129,7 @@ public class AccessControlAspect {
 					if(targetUser != null){
 						if(targetUser.getSharedWithMe().contains(secretId)){
 							targetUser.getSharedWithMe().remove(secretId);
-							System.out.println("Unshared Successfully!!");
+							//System.out.println("Unshared Successfully!!");
 							return;
 						}else{
 							//do nothing
